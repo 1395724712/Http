@@ -1,0 +1,1 @@
+g++  -pthread -g   CMakeFiles/demo.dir/main.cpp.o  -o demo 
