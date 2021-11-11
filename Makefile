@@ -58,7 +58,7 @@ CMAKE_BINARY_DIR = /home/lucky7/WorkSpace/Http
 
 # Special rule for the target rebuild_cache
 rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	@echo "Running external command ..."
 	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : rebuild_cache
 
@@ -69,7 +69,7 @@ rebuild_cache/fast: rebuild_cache
 
 # Special rule for the target edit_cache
 edit_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
+	@echo "Running external command ..."
 	/usr/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
 .PHONY : edit_cache
 
@@ -110,59 +110,6 @@ depend:
 	$(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
-#=============================================================================
-# Target rules for targets named demo
-
-# Build rule for target.
-demo: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 demo
-.PHONY : demo
-
-# fast build rule for target.
-demo/fast:
-	$(MAKE) -f CMakeFiles/demo.dir/build.make CMakeFiles/demo.dir/build
-.PHONY : demo/fast
-
-#=============================================================================
-# Target rules for targets named Mutex
-
-# Build rule for target.
-Mutex: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 Mutex
-.PHONY : Mutex
-
-# fast build rule for target.
-Mutex/fast:
-	$(MAKE) -f Mutex/CMakeFiles/Mutex.dir/build.make Mutex/CMakeFiles/Mutex.dir/build
-.PHONY : Mutex/fast
-
-main.o: main.cpp.o
-
-.PHONY : main.o
-
-# target to build an object file
-main.cpp.o:
-	$(MAKE) -f CMakeFiles/demo.dir/build.make CMakeFiles/demo.dir/main.cpp.o
-.PHONY : main.cpp.o
-
-main.i: main.cpp.i
-
-.PHONY : main.i
-
-# target to preprocess a source file
-main.cpp.i:
-	$(MAKE) -f CMakeFiles/demo.dir/build.make CMakeFiles/demo.dir/main.cpp.i
-.PHONY : main.cpp.i
-
-main.s: main.cpp.s
-
-.PHONY : main.s
-
-# target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) -f CMakeFiles/demo.dir/build.make CMakeFiles/demo.dir/main.cpp.s
-.PHONY : main.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -170,12 +117,7 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... rebuild_cache"
-	@echo "... demo"
 	@echo "... edit_cache"
-	@echo "... Mutex"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
 .PHONY : help
 
 
