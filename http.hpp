@@ -19,6 +19,10 @@ public:
     void getMessage(string msg);
 
 private:
+    //解析消息
+    void parseMsg(void *);
+
+    //获取一行
     LINESTATE getLine(string& msg);
 
     //负责保护requestMsg的锁

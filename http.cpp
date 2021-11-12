@@ -1,8 +1,8 @@
 #include"http.hpp"
-
+#include<functional>
 Http::LINESTATE Http::getLine(string &line){
     //0、 先加锁
-    MutexLock lockGuard(msgMutex_);
+    MutexLock lock(msgMutex_);
 
     //1、如果msgItr指向请求消息最后一个元素的下一个，说明此时无待处理报文
     if(msgItr_>=requestMsg.end())
@@ -28,4 +28,19 @@ Http::LINESTATE Http::getLine(string &line){
     line = requestMsg.substr(msgItr_ - requestMsg.begin(),nailItr-2-msgItr_+1);
     msgItr_ = nailItr+1;
     return LINE_OK;
+}
+
+void Http::getMessage(string msg){
+    {
+        MutexLock lockGuard(msgMutex_);
+        requestMsg += msg;
+    }
+
+    if(requestMsg.size()==msg.size())
+        msgItr_ = requestMsg.begin();
+    
+    //todo:多线程部分尝试C++11的新特性
+    // pthread_t pidId;
+    // std::function<void(void*)> parseMsgThread = std::bind(parseMsg,this,std::placeholders::_1);
+    // pthread_create(&pidId,nullptr,this->parseMsg,nullptr);
 }
