@@ -20,7 +20,7 @@ public:
 
 private:
     //解析消息
-    void parseMsg(void *);
+    static void* parseMsg(void *);
 
     //获取一行
     LINESTATE getLine(string& msg);

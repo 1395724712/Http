@@ -1,5 +1,7 @@
 #include"http.hpp"
 #include<functional>
+
+
 Http::LINESTATE Http::getLine(string &line){
     //0、 先加锁
     MutexLock lock(msgMutex_);
@@ -40,7 +42,7 @@ void Http::getMessage(string msg){
         msgItr_ = requestMsg.begin();
     
     //todo:多线程部分尝试C++11的新特性
-    // pthread_t pidId;
-    // std::function<void(void*)> parseMsgThread = std::bind(parseMsg,this,std::placeholders::_1);
-    // pthread_create(&pidId,nullptr,this->parseMsg,nullptr);
+    pthread_t pidId;
+    pthread_create(&pidId,nullptr,Http::parseMsg,this);
+
 }
