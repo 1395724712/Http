@@ -31,9 +31,10 @@ Keywords:轮子，http状态机
 ### 3.3、 获取一行
 `LINE_STATE getLine(string& line)`
 将每个`\r\n`之间的内容交给`line`
-* 维护一个迭代器指向**每一个请求行开头**
-> `msgItr_`永远只指向请求行的开头，由getMessage负责初始化
-
+* 维护一个index指向**每一个请求行开头**
+> `lineStart_`永远只指向请求行的开头，由getMessage负责初始化
+* 维护一个index指向当前的位置
+> `lineCur_`指向当前的位置
 
 ### 3.1 关键成员变量
 

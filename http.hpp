@@ -3,6 +3,12 @@
 #include"Mutex.hpp"
 #include<string>
 using namespace std;
+
+#define DEBUG_TEST
+#ifdef DEBUG_TEST
+#define DEBUG_GETLINE
+#endif
+
 class Http{
 public:
     //报文请求方法
@@ -19,6 +25,11 @@ public:
     void getMessage(string msg);
 
 private:
+    //请求方法
+    METHOD method_;
+
+
+private:
     //解析消息
     static void* parseMsg(void *);
 
@@ -29,10 +40,10 @@ private:
     Mutex msgMutex_ = Mutex();
     //请求报文
     string requestMsg GUARDED_BY(msgMutex_);
-    //负责保护指向请求报文待解析部分开头迭代器的锁
-    // Mutex msgItrMutex_;
-    //指向请求报文待解析部分开头的迭代器
-    string::iterator msgItr_;
+    //指向请求报文新一行的index
+    unsigned int lineStart_;
+    //指向请求报文待解析部分开头的index
+    unsigned int lineCur_;
 };
 
 #endif
