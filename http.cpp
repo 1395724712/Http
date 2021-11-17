@@ -69,17 +69,12 @@ void Http::getMessage(string msg){
     {
         MutexLock lockGuard(msgMutex_);
         requestMsg_ += msg;
-
-        // cout<<"new added msg: "<<msg<<endl;
-        // cout<<"RequestMsg_: "<<requestMsg_<<endl;
     }
     
     //todo:多线程部分尝试C++11的新特性
     pthread_t pidId;
     pthread_create(&pidId,nullptr,parseMsg,this);
-    // pthread_join(pidId,nullptr);
     pthread_detach(pidId);
-    // parseMsg(this);
 }
 
 void* Http::parseMsg(void* para){
@@ -97,7 +92,4 @@ void* Http::parseMsg(void* para){
         line = "";
         lineState = This->getLine(line);
     }
-
-    if(lineState == LINE_OK&&line=="")
-        cout<<"getLine success"<<endl;
 }
