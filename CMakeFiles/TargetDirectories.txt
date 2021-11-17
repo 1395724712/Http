@@ -1,4 +1,6 @@
 /home/lucky7/WorkSpace/Http/CMakeFiles/rebuild_cache.dir
+/home/lucky7/WorkSpace/Http/CMakeFiles/demo.dir
 /home/lucky7/WorkSpace/Http/CMakeFiles/edit_cache.dir
 /home/lucky7/WorkSpace/Http/Mutex/CMakeFiles/rebuild_cache.dir
+/home/lucky7/WorkSpace/Http/Mutex/CMakeFiles/Mutex.dir
 /home/lucky7/WorkSpace/Http/Mutex/CMakeFiles/edit_cache.dir

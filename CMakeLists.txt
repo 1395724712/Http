@@ -32,7 +32,10 @@ set(CMAKE_BUILD_TYPE "Debug")
 # 设置头文件
 include_directories(./Mutex)
 add_subdirectory(./Mutex)
+# 添加需要链接的库目录
+link_directories(./Mutex)
 # 目标
-set(SRC main.cpp)
+set(SRC main.cpp http.cpp)
 add_executable(demo ${SRC})
-target_link_libraries(Mutex)
+# 设置需要链接的库文件名称
+target_link_libraries(demo libMutex.so)

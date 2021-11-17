@@ -22,6 +22,7 @@ Keywords:轮子，http状态机
 
 ### 3.2、 消息解析
 `void parseMsg()`
+本函数但当主状态机的工作，同时还要负责在解析出结果后，调用相应的负责应答的业务函数。
 * 进入本函数后，先加锁
 > 确保同一时刻只有一个`parseMsg()`在处理，确保状态机正常运行
 * 然后检查`requestMsg`是否为空
@@ -38,13 +39,13 @@ Keywords:轮子，http状态机
 
 ### 3.1 关键成员变量
 
-* string msg
+* string requestMsg_
 > 收到的请求
 
 * Mutex msgMutex_
 > 保护msg
 
-* Mutex ParseMutex_;
+* Mutex parseMutex_;
 > 保护同一时间只有一个parseMsg在允许（也许应该使用条件变量）
 
 ### 3.2 关键成员函数

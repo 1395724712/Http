@@ -1,0 +1,1 @@
+g++  -pthread -g   CMakeFiles/demo.dir/main.cpp.o CMakeFiles/demo.dir/http.cpp.o  -o demo  -L/home/lucky7/WorkSpace/Http/./Mutex -Wl,-rpath,/home/lucky7/WorkSpace/Http/./Mutex -lMutex 
