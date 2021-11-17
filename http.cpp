@@ -97,7 +97,9 @@ void* Http::parseMsg(void* para){
                 }
                 break;
             case CHECK_REQUEST_HEADER:
-
+                {
+                    PARSESTATE parseRes = This->parseRequestHeader(line);
+                }
                 break;
             case CHECK_REQUEST_CONTENT:
                 break;
@@ -170,10 +172,60 @@ Http::PARSESTATE Http::parseRequestLine(const string& line){
     //4、切换主状态机状态
     mainState_ = CHECK_REQUEST_HEADER;
 
-#ifdef DEBUG_PARSE_REQHEADER
+#ifdef DEBUG_PARSE_REQLINE
     cout<<"Method: "<<method<<endl;
     cout<<"URI: "<<uri_<<endl;
     cout<<"HTTP Version: "<<httpVersion_<<endl;
 #endif
     return returnRes;
+}
+
+Http::PARSESTATE Http::parseRequestHeader(const string& line){
+    //0 负责的工作
+    //0.1 从请求头部中获取我们需要的信息
+    //0.2 如果读如的是空行，主状态机转为CHECK_REQUEST_CONTENT
+
+    //1、 获取字段名
+    int startIdx =0;
+    int endIdx =0;
+    while(startIdx<line.size()&&(line[startIdx]==' '||line[startIdx]=='\t'))
+        startIdx++;
+    if(startIdx == line.size())
+        return BAD_REQUEST;
+
+    endIdx = startIdx;
+    while(endIdx<line.size()&&line[endIdx]!=':')
+        endIdx++;
+    if(endIdx==line.size())
+        return BAD_REQUEST;
+
+    string segmentName = line.substr(startIdx,endIdx-startIdx);
+    transform(segmentName.begin(),segmentName.end(),segmentName.begin(),::toupper);
+    
+    //2、获取字段值
+    startIdx = endIdx+1;
+    while(startIdx<line.size()&&(line[startIdx]==' '||line[startIdx]=='\t'))
+        startIdx++;
+    if(startIdx==line.size())
+        return BAD_REQUEST;
+    
+    endIdx = line.size()-1;
+    while(line[endIdx]==' '||line[endIdx]=='\t')
+        endIdx--;
+    if(endIdx==startIdx-1)
+        return BAD_REQUEST;
+    
+    string segmentValue = line.substr(startIdx,endIdx-startIdx+1);
+    transform(segmentValue.begin(),segmentValue.end(),segmentValue.begin(),::toupper);
+
+    if(segmentName == "CONNECTION")
+        if(segmentValue=="KEEP-ALIVE")
+            keepConnection_ = true;
+        else
+            keepConnection_ = false;
+#ifdef DEBUG_PARSE_REQHEADER
+    cout<<"Segment Name: "<<segmentName<<endl;
+    cout<<"Segment Value: "<<segmentValue<<endl;
+#endif
+
 }

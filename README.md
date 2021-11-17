@@ -40,6 +40,12 @@ Keywords:轮子，http状态机，GET、POST
 > 解析状态PRASESTATE:如果成功返回请求类型`GET_REQUEST`、`POST_REQUEST`；如果请求类型暂时不接受，就返回`NO_REQUEST`;
 > 如果请求存在语病，就返回`BAD_REQUEST`；对于其余的状态码，暂时不做考虑
 
+#### 3.2.2、解析请求头部`parseRequestHead`
+* 它负责什么工作？
+> 从请求头部中读取**我们感兴趣的信息**
+* 它返回什么？
+> 解析状态PRASESTATE：如果运行正常就根据method返回；如果出错就返回`BAD_REQUEST`
+
 ### 3.3、 获取一行
 `LINE_STATE getLine(string& line)`
 将每个`\r\n`之间的内容交给`line`

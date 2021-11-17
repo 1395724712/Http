@@ -8,6 +8,7 @@ using namespace std;
 #ifdef DEBUG_TEST
 // #define DEBUG_GETLINE
 #define DEBUG_PARSEMSG
+#define DEBUG_PARSE_REQLINE
 #define DEBUG_PARSE_REQHEADER
 #endif
 
@@ -55,6 +56,9 @@ private:
 
     //解析请求行
     PARSESTATE parseRequestLine(const string& line);
+
+    //解析请求头部
+    PARSESTATE parseRequestHeader(const string& line);
 
     //获取一行
     LINESTATE getLine(string& msg);
