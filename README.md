@@ -1,5 +1,5 @@
 # Http
-Keywords:轮子，http状态机
+Keywords:轮子，http状态机，GET、POST
 
 ## 1、 HTTP状态机
 我希望这个项目可以成为一个即插即用的HTTP状态机，从设计开始一步一步、一点点完成一个能够用于webserver的http状态机
@@ -27,7 +27,18 @@ Keywords:轮子，http状态机
 > 确保同一时刻只有一个`parseMsg()`在处理，确保状态机正常运行
 * 然后检查`requestMsg`是否为空
 > 如果为空，说明解析已经被其他线程的`parseMsg()`完成，直接返回
-* 然后进行解析
+* 主状态机负责解析请求行和请求首部信息
+> * `parseRequestLine`负责解析请求行的工作,要求从中获取`method_`,`uri_`,`httpVersion_`
+> * `parseRequestHeader`负责解析请求首部的内容，要求从中获取`KeepConnection_`,
+> 对于Http版本号，暂时不做否决处理，只保留
+> 对于请求首部的其他信息，现在即便知道了也不知道怎么处理，所以暂时不保留
+
+#### 3.2.1、解析请求行`parseRequestLine`
+* 它负责什么工作？
+> 解析请求行
+* 它返回什么？
+> 解析状态PRASESTATE:如果成功返回请求类型`GET_REQUEST`、`POST_REQUEST`；如果请求类型暂时不接受，就返回`NO_REQUEST`;
+> 如果请求存在语病，就返回`BAD_REQUEST`；对于其余的状态码，暂时不做考虑
 
 ### 3.3、 获取一行
 `LINE_STATE getLine(string& line)`

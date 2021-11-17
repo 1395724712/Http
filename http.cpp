@@ -2,10 +2,11 @@
 #include<functional>
 #include<assert.h>
 #include<iostream>
+#include<algorithm>
 using namespace std;
 
 Http::Http():
-mainState_(CHECK_STATE_REQUESTLINE),//主状态机的初始状态是解析请求行
+mainState_(CHECK_REQUEST_REQUESTLINE),//主状态机的初始状态是解析请求行
 parseRes_(NO_REQUEST),
 msgMutex_(Mutex()),
 parseMutex_(Mutex()),
@@ -87,9 +88,92 @@ void* Http::parseMsg(void* para){
     LINESTATE lineState = This->getLine(line);
     if(lineState == MSG_EMPTY)
         return nullptr;
-    while(line!=""){
+    while(lineState == LINE_OK){
+        
+        switch(This->mainState_){
+            case CHECK_REQUEST_REQUESTLINE:
+                {
+                    PARSESTATE parseRes = This->parseRequestLine(line);
+                }
+                break;
+            case CHECK_REQUEST_HEADER:
+
+                break;
+            case CHECK_REQUEST_CONTENT:
+                break;
+            defualt:
+                break;
+        }
 
         line = "";
         lineState = This->getLine(line);
     }
+}
+
+Http::PARSESTATE Http::parseRequestLine(const string& line){
+    //0 本函数的工作
+    //0.1、获取请求方法、uri、http版本号
+    //0.2、本函数负责修改mianState_的状态
+    unsigned int startIdx = 0;
+    unsigned int endIdx = 0;
+
+    //0.3 消除开始位置的空格
+    while(line[startIdx]==' '||line[startIdx]=='\t')
+        startIdx++;
+    endIdx = startIdx;
+
+    //1、获取请求方法
+    PARSESTATE returnRes;
+    while(endIdx<line.size()&&line[endIdx]!=' '&&line[endIdx]!='\t')
+        endIdx++;
+    string method = line.substr(startIdx,endIdx-startIdx);
+    //避免不规范，转换为大写
+    transform(method.begin(),method.end(),method.begin(),::toupper);
+    if(method=="GET")
+    {
+        method_ = GET;
+        returnRes = GET_REQUEST;
+    }
+    else if(method == "POST"){
+        method_ = POST;
+        returnRes = POST_REQUEST;
+    }
+    else
+        return NO_REQUEST;
+
+    //2、获取uri
+    startIdx = endIdx+1;
+    while(startIdx<line.size()&&(line[startIdx]==' '||line[startIdx]=='\t'))
+        startIdx++;
+    endIdx = startIdx+1;
+
+    while(endIdx<line.size()&&line[endIdx]!=' '&&line[endIdx]!='\t')
+        endIdx++;
+    startIdx = endIdx;
+
+    while(startIdx>=0&&line[startIdx]!='/')
+        startIdx--;
+    startIdx++;
+    if(startIdx==0)
+        return BAD_REQUEST;
+    uri_ = line.substr(startIdx,endIdx - startIdx);
+
+    //3、获取版本号
+    startIdx = endIdx+1;
+    while(startIdx<line.size()&&(line[startIdx]==' '||line[startIdx]=='\t'))
+        startIdx++;
+    endIdx = startIdx+1;
+    while(endIdx<line.size()&&line[endIdx]!=' '&&line[endIdx]!='\t')
+        endIdx++;
+    httpVersion_ = line.substr(startIdx,endIdx-startIdx);
+
+    //4、切换主状态机状态
+    mainState_ = CHECK_REQUEST_HEADER;
+
+#ifdef DEBUG_PARSE_REQHEADER
+    cout<<"Method: "<<method<<endl;
+    cout<<"URI: "<<uri_<<endl;
+    cout<<"HTTP Version: "<<httpVersion_<<endl;
+#endif
+    return returnRes;
 }
